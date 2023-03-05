@@ -124,7 +124,7 @@ App = {
                 alert("Comprata");
         }).catch(function(err) {
             console.log(err);
-            alert("non comprata");
+            alert("Non comprata: " + err);
         });
         });
 

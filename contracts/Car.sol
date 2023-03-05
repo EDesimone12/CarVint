@@ -80,8 +80,6 @@ contract Car is ERC721 {
         //invio i soldi
         cars[carId].owner.transfer(msg.value);
         cars[carId].used = false;
-        //elimino dalla lista delle macchine del proprietario precedente
-        delete ownedCars[cars[carId].owner];
         //adesso non è più vendibile
         delete noBuyCars[carId];
         //incremento il contatore degli annunci
@@ -111,7 +109,7 @@ contract Car is ERC721 {
     function  getCarsList() public view returns (CarInfo[] memory){
         CarInfo[] memory toReturnCars = new CarInfo[](carsIds.current());
         for(uint i = 0; i < carsIds.current(); i++) {
-                toReturnCars[i] = cars[i];
+            toReturnCars[i] = cars[i];
         }
         return toReturnCars;
     }
@@ -120,21 +118,28 @@ contract Car is ERC721 {
     function  getNoBuyCarsList() public view returns (CarInfo[] memory){
         CarInfo[] memory toReturnCars = new CarInfo[](counterNoBuy.current());
         for(uint i = 0; i < counterNoBuy.current(); i++) {
-                toReturnCars[i] = noBuyCars[i];
+            toReturnCars[i] = noBuyCars[i];
         }
         return toReturnCars;
     }
 
 
     function getCarsListByOwner() public view returns(CarInfo[] memory){
-        uint256[] memory allCarsId;
 
-        allCarsId = ownedCars[msg.sender];
+        uint256[] memory allCarsId = new uint256[](carsIds.current());
+        uint256 count = 0;
 
-        CarInfo[] memory toReturnCars = new CarInfo[](allCarsId.length);
+        for(uint i = 0; i < carsIds.current(); i++) {
+            if(cars[i].owner == msg.sender) {
+                allCarsId[count] = cars[i].carId;
+                count++;
+            }
+        }
 
-        for(uint i = 0; i < allCarsId.length; i++) {
-            toReturnCars[i]  = cars[allCarsId[i]];
+        CarInfo[] memory toReturnCars = new CarInfo[](count);
+
+        for(uint i = 0; i < count; i++) {
+            toReturnCars[i] = cars[allCarsId[i]];
         }
 
         return toReturnCars;
