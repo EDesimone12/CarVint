@@ -64,6 +64,7 @@ contract Car is ERC721 {
     function sellMyCar(uint256 carId) public {
 
         require(cars[carId].used != true, "Macchina gia in vendita");
+        require(cars[carId].owner == msg.sender, "Non puoi mettere in venditatr");
         counterNoBuy.increment();
 
         noBuyCars[carId] = CarInfo(cars[carId].owner, carId, cars[carId].name, cars[carId].price, cars[carId].description, cars[carId].image, true);
